@@ -49,10 +49,30 @@
                     name: $("#username").val(),
                     content: $("#content").val()
                 }
+
+                /* El if es para validar que ambos campos de texto contengan algún caracter para ser enviados como mensaje y no se envíen vacíos */
+                if(message.name.length > 0 && message.content.length > 0) {
                 /* Envía mensaje al servidor */
                 socket.emit("nuevo_mensaje", message)
+                // Deshabilita el campo username para que no pueda volver ingresar otro nombre de usuario.
+                $("#username").attr("disabled", "disabled")
+                // Limpia el contenido del campo de texto content y hace foco para ingresar otro mensaje.
+                $("#content").val("").focus()
+              }
+            })
+            
+            // Dinfunde mensaje del servidor al cliente
+            socket.on('difundir_mensaje', (message) => {
+              $("#chat").append(`<b>${special(message.name)}</b> ${special(message.content)}<br>`)
             })
         })
+
+        /* Función que transforma el contenido de etiquetas en texto, para impedir que se inyecte código HTML en el chat! */
+        function special(str) {
+          str = str.replace(/</gi, '&lt;')
+          str = str.replace(/>/gi, '&gt;')
+          return str
+        }
     </script>
   </body>
 </html>
