@@ -13,6 +13,7 @@ io.on('connection', (socket) => {
     socket.emit("bienvenida")
     socket.on('nuevo_mensaje', (message) => {
         console.log(message)
+        io.sockets.emit('difundir_mensaje', message)
     })
 })
 
